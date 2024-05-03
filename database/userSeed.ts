@@ -1,50 +1,36 @@
 import { Client } from "pg";
-import dotenv from "dotenv"
-dotenv.config()
+import dotenv from "dotenv";
+import { hashPassword } from "../utils/hash";
+dotenv.config();
 
 let pgClient = new Client({
     database: process.env.DB_NAME,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD
-})
+});
 
-type posts = {
-    title: string,
-    content: string,
-}
+type users = {
+    username: string,
+    password: string,
+};
 
-type images = {
-    image: string,
-}
+async function seedUsers() {
+    try {
+        let users: users[] = [
+            { username: "user1", password: "1234" },
+            { username: "user2", password: "1234" }
+        ];
+        await pgClient.connect();
 
-async function post() {
-    try{
-        let posts : posts[]=[
-            {title:"firstpost",content:"firstcontent"},
-            {title:"secondpost",content:"secondcontent"}
-        ]
+        for (let entry of users) {
+            let hashed = await hashPassword(entry.password);
 
-        let images:images[]=[
-            {image:"dummy1.jpg"},
-            {image:"dummy2.jpg"}
-        ]
-        await pgClient.connect()
-
-        for (let entry of posts){
-            let postQueryResult = await pgClient.query
-            ("INSERT INTO posts (title,content) VALUES ($1,$2) RETURNING id",[entry.title,entry.content])
-            for (let imageItems of images){
-                let imageQueryResult = await pgClient.query 
-                ("INSERT INTO images (image) VALUES ($1) RETURNING id ",[imageItems.image])
-            }
+            await pgClient.query("INSERT INTO users (username, password) VALUES ($1, $2)", [entry.username, hashed]);
         }
-
-        await pgClient.end()
-
-    }catch(e){
-        console.log("ERROR")
+        await pgClient.end();
+    } catch (e) {
+        console.log("ERROR in user seed:", e);
     }
-    
 }
 
-post()
+seedUsers();
