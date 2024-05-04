@@ -16,5 +16,5 @@ CREATE TABLE images (
     id SERIAL PRIMARY KEY,
     imagesId integer,
     FOREIGN KEY (imagesId) REFERENCES posts(id),
-    image varchar(10)
+    image varchar(255)
 );

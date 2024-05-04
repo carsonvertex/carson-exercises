@@ -29,6 +29,11 @@ app.use(
     })
 );
 
+//parsing middleware
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+
 //api
 app.use("/post",postRouter)
 
