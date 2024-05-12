@@ -1,2 +1,2 @@
 const frontEndDeveloper=()=>{
-buildingWebSiteAlone;}
+"Try to build website alone";}
