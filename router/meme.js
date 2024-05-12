@@ -1,2 +1,2 @@
-frontEndDeveloper()=>{
+const frontEndDeveloper=()=>{
 buildingWebSiteAlone;}
